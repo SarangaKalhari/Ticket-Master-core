@@ -18,7 +18,7 @@ public class BookingController {
     }
 
     @PostMapping("/get-booking")
-    public void getBooking(@RequestBody BookingRequestDTO requestDTO ){
-        bookingService.getBooking(requestDTO);
+    public String getBooking(@RequestBody BookingRequestDTO requestDTO ){
+        return bookingService.getBooking(requestDTO);
     }
 }
