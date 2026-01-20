@@ -10,13 +10,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class booking {
+public class Booking {
 
     private long id;            // PK, auto-increment
     private long userId;        // FK → users.id
     private long seatId;        // FK → seats.id
-    private BigDecimal amountPaid; // amount paid for the booking
+    private BigDecimal amountPaid; // amount paid for the Booking
     private String status;      // CONFIRMED / CANCELLED
     private LocalDateTime bookedAt; // timestamp of booking
-
 }
