@@ -16,6 +16,8 @@ public class SeatService {
 
     public void bookingSeat(SeatHoldRequestDTO requestDTO) {
 
+        seatRepository.expireUnpaidHolds();
+
         Seat seat = seatRepository.searchSeat(requestDTO.getSeat_number());
 
         if (seat == null) {

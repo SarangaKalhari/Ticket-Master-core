@@ -81,4 +81,26 @@ public class SeatRepository {
 
         return null; // seat not found
     }
+
+    public void expireUnpaidHolds() {
+        String sql = """
+        UPDATE seats
+        SET status = 'AVAILABLE',
+            held_by_user_id = NULL,
+            hold_expiry = NULL
+        WHERE status = 'HELD'
+        AND hold_expiry < NOW()
+    """;
+
+        try  {
+
+            Connection con = DBConnection.getInstance().getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
