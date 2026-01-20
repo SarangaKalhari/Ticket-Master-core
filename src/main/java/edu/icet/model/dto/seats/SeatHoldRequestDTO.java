@@ -10,4 +10,5 @@ import lombok.*;
 public class SeatHoldRequestDTO {
 
     private Long userId;
+    private String seat_number;
 }

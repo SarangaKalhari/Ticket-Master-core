@@ -2,6 +2,8 @@ package edu.icet.model.entity;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,9 +12,10 @@ import lombok.*;
 public class Seat {
 
     private long id;
-    private long event_id;
-    private String seat_number;
-    private String status;
-    private long user_id;
+    private long eventId;
+    private String seatNumber;
+    private String status; // AVAILABLE, HELD, SOLD
+    private Long heldByUserId;
+    private LocalDateTime holdExpiry;
 
 }
