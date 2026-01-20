@@ -21,4 +21,10 @@ public class BookingController {
     public String getBooking(@RequestBody BookingRequestDTO requestDTO ){
         return bookingService.getBooking(requestDTO);
     }
+
+
+    @PostMapping("/add-booking")
+    public void addBooking(@RequestBody BookingRequestDTO requestDTO){
+        bookingService.confirmBooking(requestDTO,requestDTO.getAmount());
+    }
 }

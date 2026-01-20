@@ -11,4 +11,5 @@ public class BookingRequestDTO {
 
     private Long userId;
     private Long seatId;
+    private double amount;
 }
