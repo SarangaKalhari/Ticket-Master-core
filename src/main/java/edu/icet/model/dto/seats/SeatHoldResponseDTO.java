@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class SeatHoldResponseDTO {
 
     private Long seatId;
+    private Long eventId;
     private String seatNumber;
     private String status;
     private LocalDateTime holdExpiry;

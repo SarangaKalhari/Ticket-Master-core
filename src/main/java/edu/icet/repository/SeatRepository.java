@@ -1,11 +1,14 @@
 package edu.icet.repository;
 
 import edu.icet.db.DBConnection;
+import edu.icet.model.dto.seats.SeatHoldResponseDTO;
 import edu.icet.model.entity.Seat;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class SeatRepository {
@@ -102,5 +105,35 @@ public class SeatRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public List<SeatHoldResponseDTO> getAvailableSeats(long eventId) {
+
+        List<SeatHoldResponseDTO> seats = new ArrayList<>();
+
+        String sql = "SELECT id, event_id, seat_number, status FROM seats WHERE event_id = ? AND status = 'AVAILABLE' ";
+
+        try {
+            Connection conn = DBConnection.getInstance().getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setLong(1, eventId);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                SeatHoldResponseDTO seat = new SeatHoldResponseDTO();
+                seat.setSeatId(rs.getLong("id"));
+                seat.setEventId(rs.getLong("event_id"));
+                seat.setSeatNumber(rs.getString("seat_number"));
+                seat.setStatus(rs.getString("status"));
+                seats.add(seat);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return seats;
+    }
+
 
 }
