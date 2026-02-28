@@ -30,4 +30,10 @@ public class EventController {
         return eventService.getEventById(id);
     }
 
+    @PutMapping("/{id}")
+    public boolean updateEvent(@PathVariable Long id,
+                               @RequestBody EventRequestDTO dto) throws Exception {
+        return eventService.updateEvent(id, dto);
+    }
+
     }

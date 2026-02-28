@@ -46,4 +46,13 @@ public class EventService {
 
         return event;
     }
+
+    public boolean updateEvent(Long id, EventRequestDTO dto) throws Exception {
+
+        if (eventRepository.findById(id) == null) {
+            throw new RuntimeException("Event not found");
+        }
+
+        return eventRepository.update(id, dto);
+    }
 }

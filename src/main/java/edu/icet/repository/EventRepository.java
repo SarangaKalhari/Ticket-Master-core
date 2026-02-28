@@ -78,4 +78,21 @@ public class EventRepository {
         }
         return null;
     }
+
+    public boolean update(Long id, EventRequestDTO dto) throws Exception {
+
+        String sql = "UPDATE events SET name=?, base_price=?, is_high_demand=?, event_date=? WHERE id=?";
+
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, dto.getName());
+            ps.setBigDecimal(2, dto.getBasePrice());
+            ps.setBoolean(3, dto.isHighDemand());
+            ps.setTimestamp(4, Timestamp.valueOf(dto.getEventDate()));
+            ps.setLong(5, id);
+
+            return ps.executeUpdate() > 0;
+        }
+    }
 }
