@@ -95,4 +95,16 @@ public class EventRepository {
             return ps.executeUpdate() > 0;
         }
     }
+
+    public boolean delete(Long id) throws Exception {
+
+        String sql = "DELETE FROM events WHERE id=?";
+
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+            return ps.executeUpdate() > 0;
+        }
+    }
 }

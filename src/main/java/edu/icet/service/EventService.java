@@ -55,4 +55,13 @@ public class EventService {
 
         return eventRepository.update(id, dto);
     }
+
+    public boolean deleteEvent(Long id) throws Exception {
+
+        if (eventRepository.findById(id) == null) {
+            throw new RuntimeException("Event not found");
+        }
+
+        return eventRepository.delete(id);
+    }
 }
