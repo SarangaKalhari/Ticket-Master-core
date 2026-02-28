@@ -1,11 +1,13 @@
 package edu.icet.service;
 
 import edu.icet.model.dto.event.EventRequestDTO;
+import edu.icet.model.dto.event.EventResponseDTO;
 import edu.icet.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EventService {
@@ -28,5 +30,9 @@ public class EventService {
         }
 
         return eventRepository.save(dto);
+    }
+
+    public List<EventResponseDTO> getAllEvents() throws Exception {
+        return eventRepository.findAll();
     }
 }

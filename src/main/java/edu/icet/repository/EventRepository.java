@@ -2,9 +2,12 @@ package edu.icet.repository;
 
 import edu.icet.db.DBConnection;
 import edu.icet.model.dto.event.EventRequestDTO;
+import edu.icet.model.dto.event.EventResponseDTO;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class EventRepository {
@@ -31,4 +34,31 @@ public class EventRepository {
         return null;
     }
 
+    public List<EventResponseDTO> findAll() throws Exception {
+
+        String sql = "SELECT * FROM events";
+
+        List<EventResponseDTO> eventList = new ArrayList<>();
+
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                eventList.add(mapToDTO(rs));
+            }
+        }
+        return eventList;
+    }
+
+    private EventResponseDTO mapToDTO(ResultSet rs) throws Exception {
+
+        return new EventResponseDTO(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getBigDecimal("base_price"),
+                rs.getBoolean("is_high_demand"),
+                rs.getTimestamp("event_date").toLocalDateTime()
+        );
+    }
 }
