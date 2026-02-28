@@ -61,4 +61,21 @@ public class EventRepository {
                 rs.getTimestamp("event_date").toLocalDateTime()
         );
     }
+
+    public EventResponseDTO findById(Long id) throws Exception {
+
+        String sql = "SELECT * FROM events WHERE id = ?";
+
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return mapToDTO(rs);
+            }
+        }
+        return null;
+    }
 }

@@ -24,4 +24,10 @@ public class EventController {
     public List<EventResponseDTO> getAllEvents() throws Exception {
         return eventService.getAllEvents();
     }
-}
+
+    @GetMapping("/{id}")
+    public EventResponseDTO getEvent(@PathVariable Long id) throws Exception {
+        return eventService.getEventById(id);
+    }
+
+    }

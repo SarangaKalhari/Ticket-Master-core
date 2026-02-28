@@ -35,4 +35,15 @@ public class EventService {
     public List<EventResponseDTO> getAllEvents() throws Exception {
         return eventRepository.findAll();
     }
+
+    public EventResponseDTO getEventById(Long id) throws Exception {
+
+        EventResponseDTO event = eventRepository.findById(id);
+
+        if (event == null) {
+            throw new RuntimeException("Event not found");
+        }
+
+        return event;
+    }
 }
