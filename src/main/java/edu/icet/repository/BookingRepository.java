@@ -92,4 +92,37 @@ public class BookingRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public Long save(Long userId, Long eventId, Long seatId, BigDecimal finalPrice) {
+
+        String sql = """
+        INSERT INTO bookings (user_id, event_id, seat_id, amount_paid, status, booked_at)
+        VALUES (?, ?, ?, ?, 'CONFIRMED', NOW())
+    """;
+
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            PreparedStatement stmt =
+                    connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+
+            stmt.setLong(1, userId);
+            stmt.setLong(2, eventId);
+            stmt.setLong(3, seatId);
+            stmt.setBigDecimal(4, finalPrice);
+
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
 }
