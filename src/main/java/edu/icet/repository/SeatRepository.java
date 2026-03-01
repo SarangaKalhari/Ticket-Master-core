@@ -136,4 +136,67 @@ public class SeatRepository {
     }
 
 
+    public Seat findById(Long seatId) {
+
+        String sql = """
+        SELECT id, event_id, seat_number, status, held_by_user_id, hold_expiry
+        FROM seats
+        WHERE id = ?
+    """;
+
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            statement.setLong(1, seatId);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    Seat seat = new Seat();
+                    seat.setId(rs.getLong("id"));
+                    seat.setEventId(rs.getLong("event_id"));
+                    seat.setSeatNumber(rs.getString("seat_number"));
+                    seat.setStatus(rs.getString("status"));
+                    seat.setHeldByUserId(rs.getObject("held_by_user_id", Long.class));
+                    seat.setHoldExpiry(
+                            rs.getTimestamp("hold_expiry") != null
+                                    ? rs.getTimestamp("hold_expiry").toLocalDateTime()
+                                    : null
+                    );
+                    return seat;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    public void updateStatus(Long seatId, String status) {
+
+        String sql = """
+        UPDATE seats
+        SET status = ?
+        WHERE id = ?
+    """;
+
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            statement.setString(1, status);
+            statement.setLong(2, seatId);
+
+            int updated = statement.executeUpdate();
+
+            if (updated == 0) {
+                throw new RuntimeException("Seat not found or update failed");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
