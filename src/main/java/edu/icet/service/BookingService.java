@@ -1,10 +1,17 @@
 package edu.icet.service;
 
 import edu.icet.model.dto.booking.BookingRequestDTO;
+import edu.icet.model.dto.booking.BookingResponseDTO;
+import edu.icet.model.dto.event.EventResponseDTO;
+import edu.icet.model.entity.Seat;
 import edu.icet.repository.BookingRepository;
+import edu.icet.repository.EventRepository;
 import edu.icet.repository.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 public class BookingService {
@@ -14,6 +21,9 @@ public class BookingService {
 
     @Autowired
     private SeatRepository seatRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
 
 
@@ -56,6 +66,54 @@ public class BookingService {
         bookingRepository.addBooking(requestDTO.getSeatId(), requestDTO.getUserId(), requestDTO.getAmount());
 
         return "Seat booked successfully (SOLD)";
+    }
+
+
+    public BookingResponseDTO bookSeat(Long userId, Long seatId) throws Exception {
+
+        Seat seat = seatRepository.findById(seatId);
+
+        if (seat == null) {
+            throw new RuntimeException("Seat not found");
+        }
+
+        if (!"AVAILABLE".equals(seat.getStatus())) {
+            throw new RuntimeException("Seat not available");
+        }
+
+        EventResponseDTO event = eventRepository.findById(seat.getEventId());
+
+        if (event == null) {
+            throw new RuntimeException("Event not found");
+        }
+
+        if (event.getEventDate().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Event expired");
+        }
+
+        BigDecimal finalPrice = event.getBasePrice();
+
+        if (event.isHighDemand()) {
+            finalPrice = finalPrice.multiply(BigDecimal.valueOf(1.2));
+        }
+
+        // Update seat status
+        seatRepository.updateStatus(seatId, "SOLD");
+
+        // Save booking
+        Long bookingId = bookingRepository.save(
+                userId,
+                event.getId(),
+                seatId,
+                finalPrice
+        );
+
+        return new BookingResponseDTO(
+                bookingId,
+                seat.getSeatNumber(),
+                finalPrice,
+                "CONFIRMED"
+        );
     }
 
 }
